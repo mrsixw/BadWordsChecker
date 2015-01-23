@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.*;
 import java.util.EnumMap;
+import java.util.regex.Pattern;
+
 /**
  * Created by stevenw2 on 22/01/15.
  */
@@ -18,15 +20,22 @@ public class BadWordsChecker {
 
             while( (input = br.readLine()) != null)
             {
-                StringTokenizer strtok = new StringTokenizer(input);
-                while (strtok.hasMoreElements())
+
+                Iterator words = badWordMap.keySet().iterator();
+
+                while(words.hasNext())
                 {
-                    String nextToken = strtok.nextToken();
-                    if(badWordMap.containsKey(nextToken))
+                    String word = (String)words.next();
+                    if(Pattern.matches(".*"+word+".*",input.toLowerCase()))
                     {
-                        System.err.println(file.getAbsoluteFile() + " found instance of " + nextToken + " on line " +lineNum+ " " + input);
+                        System.err.println(file.getAbsoluteFile() + " found instance of " + word + " on line " +lineNum+ " " + input);
+                    }
+                    else
+                    {
+                       //System.out.println(file.getAbsoluteFile() + " did not found instance of " + word + " on line " +lineNum+ " [" + input+"]");
                     }
                 }
+
                 lineNum++;
             }
 
@@ -80,6 +89,9 @@ public class BadWordsChecker {
         else
         {
             File topLevelDir = new File(args[0]);
+
+            System.out.println("Running check on "+args[0]);
+
             findFiles(topLevelDir.listFiles());
         }
 
